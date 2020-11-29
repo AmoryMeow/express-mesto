@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const getData = require('../utils/files');
 const path = require('path');
+const getData = require('../utils/files');
 
-const fileUsers = path.join(__dirname, '..', 'data' , 'cards.json');
+const fileUsers = path.join(__dirname, '..', 'data', 'cards.json');
 
 router.get('/cards', (req, res) => {
   getData(fileUsers)
@@ -11,7 +11,7 @@ router.get('/cards', (req, res) => {
     })
     .catch((err) => {
       res.status(400).send(err);
-    })
-})
+    });
+});
 
 module.exports = router;
