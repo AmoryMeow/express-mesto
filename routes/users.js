@@ -10,7 +10,7 @@ router.get('/users', (req, res) => {
       res.status(200).send(data);
     })
     .catch((err) => {
-      res.status(400).send(err);
+      res.status(500).send(err);
     });
 });
 
@@ -25,7 +25,7 @@ router.get('/users/:id', (req, res) => {
       res.status(404).send({ message: 'Нет пользователя с таким id' });
     })
     .catch((err) => {
-      res.status(400).send(err);
+      res.status(500).send(err);
     });
 });
 
