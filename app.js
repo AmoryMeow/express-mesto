@@ -1,5 +1,6 @@
 const exspress = require('express');
 const path = require('path');
+const bodyParser = require('body-parser')
 const usersRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
 const pageNotFound = require('./routes/pageNotFound');
@@ -18,6 +19,10 @@ mongoose.connect('mongodb://localhost:27017/mestodb',
   })
 
 app.use(exspress.static(path.join(__dirname, 'public')));
+
+
+app.use(bodyParser.urlencoded({ extended: false })) // parse application/x-www-form-urlencoded
+app.use(bodyParser.json()); // parse application/json
 
 app.use('/', usersRouter);
 app.use('/', cardsRouter);
