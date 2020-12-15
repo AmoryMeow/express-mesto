@@ -14,7 +14,6 @@ getUserById = (req,res) => {
 }
 
 createUser = (req,res) => {
-  debugger
   const {name, about, avatar} = req.body;
   UserSchema.create({name, about, avatar})
     .then(user => res.status(200).send(user))

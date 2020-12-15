@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const cardSchema = new mongoose.Schema({
+const CardSchema = new mongoose.Schema({
   name: {
     type: String,
     minlength: 2,
@@ -18,7 +18,7 @@ const cardSchema = new mongoose.Schema({
       message: 'Некорректный URL'
     }
   },
-  ownew: {
+  owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
     required: true
@@ -34,4 +34,4 @@ const cardSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('card', cardSchema);
+module.exports = mongoose.model('card', CardSchema);

@@ -5,7 +5,7 @@ const getData = require('../utils/files');
 const {getUser, getUserById, createUser} = require('../controllers/users');
 
 const fileUsers = path.join(__dirname, '..', 'data', 'users.json');
-debugger
+
 router.get('/users', getUser);
 router.get('/users/:id', getUserById);
 router.post('/users', createUser);
