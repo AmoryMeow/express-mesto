@@ -14,7 +14,6 @@ const createCard = (req,res) => {
   CardSchema.create({name, link, owner})
     .then(card => res.status(200).send(card))
     .catch((err) => {
-      console.log('err.name: ', err.name);
       if (err.name === 'ValidationError')  {
         res.status(400).send({message: 'Переданы некорректные данные'})
       } else {
@@ -24,11 +23,14 @@ const createCard = (req,res) => {
 }
 
 const deleteCardById = (req,res) => {
-  // const {id} = req.params;
-  // console.log('req.params: ', req.params);
+   const {id} = req.params;
 
-  //CardSchema.findOneAndRemove(id)
-  //.then()
+  CardSchema.findOneAndRemove(id)
+    .orFail(() => {
+      res.status(404).send({message: 'Данные не найдены'});
+    })
+    .then(card => res.status(200).send(card))
+    .catch(err => res.status(500).send({message: err.message}))
 }
 
 module.exports = {getCards, createCard, deleteCardById}
