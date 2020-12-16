@@ -15,15 +15,6 @@ getUserById = (req,res) => {
       throw error;
     })
     .then(data => res.status(200).send(data))
-    //.catch(err => res.status(500).send({message: err}))
-    // .catch((err) => {
-    //   if (err.kind === 'ObjectId') {
-    //     res.status(400).send({message: 'Ошибка получения данных'});
-    //   } else {if (err.statusCode === 404) {
-    //     res.status(404).send({message: err.message})
-    //   } else {
-    //     res.status(500).send('Ошибка сервера');
-    //   }
     .catch((err) => {
       if (err.kind === 'ObjectId') {
         res.status(400).send({message: 'Ошибка получения данных'});
