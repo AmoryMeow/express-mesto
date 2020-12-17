@@ -3,14 +3,14 @@ const UserSchema = require('../models/user');
 getUser = (req,res) => {
   UserSchema.find({})
     .then(data => res.status(200).send(data))
-    .catch(err => res.status(500).send({message: 'Ошибка получения данных'}))
+    .catch(err => res.status(500).send({message: 'Ошибка сервера'}))
 }
 
 getUserById = (req,res) => {
   const {id} = req.params;
   UserSchema.findById(id)
     .orFail(() => {
-      const error = new Error('Пользователь не найден');
+      const error = new Error('Данные не найдены');
       error.statusCode = 404;
       throw error;
     })

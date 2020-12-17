@@ -3,7 +3,7 @@ const CardSchema = require('../models/card');
 const getCards = (req,res) => {
   CardSchema.find({})
     .then(data => res.status(200).send(data))
-    .catch(err => res.status(500).send({message: 'Ошибка получения данных'}))
+    .catch(err => res.status(500).send({message: 'Ошибка сервера'}))
 }
 
 const createCard = (req,res) => {
@@ -23,14 +23,25 @@ const createCard = (req,res) => {
 }
 
 const deleteCardById = (req,res) => {
-   const {id} = req.params;
-
-  CardSchema.findOneAndRemove(id)
+  const {id} = req.params;
+  console.log(id)
+  CardSchema.findByIdAndRemove(id)
     .orFail(() => {
-      res.status(404).send({message: 'Данные не найдены'});
+      const error = new Error('Данные не найдены');
+      error.statusCode = 404;
+      console.log('error: ', error);
+      throw error;
     })
     .then(card => res.status(200).send(card))
-    .catch(err => res.status(500).send({message: err.message}))
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        res.status(400).send({message: 'Ошибка получения данных'});
+      } else if (err.statusCode === 404) {
+        res.status(404).send({message: err.message})
+      } else {
+        res.status(500).send({message: 'Ошибка сервера'});
+      }
+    })
 }
 
 module.exports = {getCards, createCard, deleteCardById}
