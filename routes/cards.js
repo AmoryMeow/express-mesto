@@ -1,10 +1,8 @@
 const router = require('express').Router();
-const path = require('path');
-const getData = require('../utils/files');
 
-const {getCards, createCard, deleteCardById, likeCard, dislikeCard} = require('../controllers/cards');
-
-const fileUsers = path.join(__dirname, '..', 'data', 'cards.json');
+const {
+  getCards, createCard, deleteCardById, likeCard, dislikeCard,
+} = require('../controllers/cards');
 
 router.get('/cards', getCards);
 router.post('/cards', createCard);

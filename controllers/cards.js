@@ -1,95 +1,94 @@
 const CardSchema = require('../models/card');
 
-const getCards = (req,res) => {
+const getCards = (req, res) => {
   CardSchema.find({})
-    .then(data => res.status(200).send(data))
-    .catch(err => res.status(500).send({message: 'Ошибка сервера'}))
-}
+    .then((data) => res.status(200).send(data))
+    .catch((err) => res.status(500).send({ message: `Ошибка сервера ${err}` }));
+};
 
-const createCard = (req,res) => {
-
-  const {name, link} = req.body;
+const createCard = (req, res) => {
+  const { name, link } = req.body;
   const owner = req.user._id;
 
-  CardSchema.create({name, link, owner})
-    .then(card => res.status(200).send(card))
+  CardSchema.create({ name, link, owner })
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
-      if (err.name === 'ValidationError')  {
-        res.status(400).send({message: 'Переданы некорректные данные'})
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Переданы некорректные данные' });
       } else {
-        res.status(500).send({message: err.message})
+        res.status(500).send({ message: `Ошибка сервера ${err}` });
       }
     });
-}
+};
 
-const deleteCardById = (req,res) => {
-  const {cardId} = req.params;
-    CardSchema.findByIdAndRemove(cardId)
+const deleteCardById = (req, res) => {
+  const { cardId } = req.params;
+  CardSchema.findByIdAndRemove(cardId)
     .orFail(() => {
       const error = new Error('Данные не найдены');
       error.statusCode = 404;
-      console.log('error: ', error);
       throw error;
     })
-    .then(card => res.status(200).send(card))
+    .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.kind === 'ObjectId') {
-        res.status(400).send({message: 'Ошибка получения данных'});
+        res.status(400).send({ message: 'Ошибка получения данных' });
       } else if (err.statusCode === 404) {
-        res.status(404).send({message: err.message})
+        res.status(404).send({ message: err.message });
       } else {
-        res.status(500).send({message: 'Ошибка сервера'});
+        res.status(500).send({ message: `Ошибка сервера ${err}` });
       }
-    })
-}
+    });
+};
 
-const likeCard = (req,res) => {
+const likeCard = (req, res) => {
   const userId = req.user._id;
-  const {cardId} = req.params;
+  const { cardId } = req.params;
 
   CardSchema.findByIdAndUpdate(cardId,
-    {$addToSet: { likes: userId }},
-    {new: true})
+    { $addToSet: { likes: userId } },
+    { new: true })
     .orFail(() => {
       const error = new Error('Данные не найдены');
       error.statusCode = 404;
       throw error;
     })
-    .then(data => res.status(200).send(data))
+    .then((data) => res.status(200).send(data))
     .catch((err) => {
       if (err.kind === 'ObjectId') {
-        res.status(400).send({message: 'Ошибка получения данных'});
+        res.status(400).send({ message: 'Ошибка получения данных' });
       } else if (err.statusCode === 404) {
-        res.status(404).send({message: err.message})
+        res.status(404).send({ message: err.message });
       } else {
-        res.status(500).send({message: 'Ошибка сервера'});
+        res.status(500).send({ message: `Ошибка сервера ${err}` });
       }
-    })
+    });
+};
 
-}
-
-const dislikeCard = (req,res) => {
+const dislikeCard = (req, res) => {
   const userId = req.user._id;
-  const {cardId} = req.params;
+  const { cardId } = req.params;
 
   CardSchema.findByIdAndUpdate(cardId,
-    {$pull: { likes: userId }},
-    {new: true})
+    { $pull: { likes: userId } },
+    { new: true })
     .orFail(() => {
       const error = new Error('Данные не найдены');
       error.statusCode = 404;
       throw error;
     })
-    .then(data => res.status(200).send(data))
+    .then((data) => res.status(200).send(data))
     .catch((err) => {
       if (err.kind === 'ObjectId') {
-        res.status(400).send({message: 'Ошибка получения данных'});
+        res.status(400).send({ message: 'Ошибка получения данных' });
       } else if (err.statusCode === 404) {
-        res.status(404).send({message: err.message})
+        res.status(404).send({ message: err.message });
       } else {
-        res.status(500).send({message: 'Ошибка сервера'});
+        res.status(500).send({ message: `Ошибка сервера ${err}` });
       }
-    })
-}
+    });
+};
 
-module.exports = {getCards, createCard, deleteCardById, likeCard, dislikeCard}
+module.exports = {
+  getCards, createCard, deleteCardById, likeCard, dislikeCard,
+};

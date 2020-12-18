@@ -5,25 +5,25 @@ const UserSchema = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    required: true
+    required: true,
   },
   about: {
     type: String,
     minlength: 2,
     maxlength: 30,
-    required: true
+    required: true,
   },
   avatar: {
     type: String,
     required: true,
     validate: {
       validator: function(v) {
-        regex = /https?:\/\/w{0,3}[a-z0-9-._~:\/?#[\]@!$&'()*+,;=]{0,}/gi
+        regex = /https?:\/\/w{0,3}[a-z0-9-._~:\/?#[\]@!$&'()*+,;=]{0,}/gi;
         return regex.test(v);
       },
-      message: 'Некорректный URL'
-    }
-  }
+      message: 'Некорректный URL',
+    },
+  },
 });
 
 module.exports = mongoose.model('user', UserSchema);

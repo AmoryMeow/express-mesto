@@ -1,10 +1,8 @@
 const router = require('express').Router();
-const path = require('path');
-const getData = require('../utils/files');
 
-const {getUser, getUserById, createUser, updateUser, updateAvatar} = require('../controllers/users');
-
-const fileUsers = path.join(__dirname, '..', 'data', 'users.json');
+const {
+  getUser, getUserById, createUser, updateUser, updateAvatar,
+} = require('../controllers/users');
 
 router.get('/users', getUser);
 router.get('/users/:userId', getUserById);
