@@ -26,7 +26,7 @@ app.use(bodyParser.json()); // parse application/json
 //временная авторизация. добавляет в каждый запрос объект user
 app.use((req, res, next) => {
   req.user = {
-    _id: '5fd623570cb9c82ef8c82f3a'
+    _id: '5fdb9e826f74140b30ca1b79'
   };
   next();
 });

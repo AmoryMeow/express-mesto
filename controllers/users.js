@@ -33,6 +33,32 @@ createUser = (req,res) => {
     .catch(err => res.status(500).send({message: 'Не удалось создать пользователя'}));
 }
 
+updateUser = (req,res) => {
+  const id = req.user._id;
+  const {name, about} = req.body;
+  UserSchema.findByIdAndUpdate(id, {name,about}, {new: true})
+    .orFail(() => {
+      const error = new Error('Данные не найдены');
+      error.statusCode = 404;
+      throw error;
+    })
+    .then(data => res.status(200).send(data))
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        res.status(400).send({message: 'Ошибка получения данных'});
+      } else if (err.statusCode === 404) {
+        res.status(404).send({message: err.message})
+      } else {
+        res.status(500).send({message: 'Ошибка сервера'});
+      }
+    })
+}
+
+updateAvatar = (req,res) => {
+  const me = req.user._id;
+}
+
 module.exports = {getUser,
                   getUserById,
-                  createUser};
+                  createUser,
+                  updateUser};
