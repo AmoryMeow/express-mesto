@@ -55,10 +55,28 @@ updateUser = (req,res) => {
 }
 
 updateAvatar = (req,res) => {
-  const me = req.user._id;
+  const id = req.user._id;
+  const {avatar} = req.body;
+  UserSchema.findByIdAndUpdate(id, {avatar}, {new: true})
+    .orFail(() => {
+      const error = new Error('Данные не найдены');
+      error.statusCode = 404;
+      throw error;
+    })
+    .then(data => res.status(200).send(data))
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        res.status(400).send({message: 'Ошибка получения данных'});
+      } else if (err.statusCode === 404) {
+        res.status(404).send({message: err.message})
+      } else {
+        res.status(500).send({message: 'Ошибка сервера'});
+      }
+    })
 }
 
 module.exports = {getUser,
                   getUserById,
                   createUser,
-                  updateUser};
+                  updateUser,
+                  updateAvatar};
