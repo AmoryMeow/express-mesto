@@ -1,12 +1,12 @@
 const UserSchema = require('../models/user');
 
-getUser = (req,res) => {
+const getUser = (req,res) => {
   UserSchema.find({})
     .then(data => res.status(200).send(data))
     .catch(err => res.status(500).send({message: 'Ошибка сервера'}))
 }
 
-getUserById = (req,res) => {
+const getUserById = (req,res) => {
   const {id} = req.params;
   UserSchema.findById(id)
     .orFail(() => {
@@ -26,14 +26,14 @@ getUserById = (req,res) => {
     })
 }
 
-createUser = (req,res) => {
+const createUser = (req,res) => {
   const {name, about, avatar} = req.body;
   UserSchema.create({name, about, avatar})
     .then(user => res.status(200).send(user))
     .catch(err => res.status(500).send({message: 'Не удалось создать пользователя'}));
 }
 
-updateUser = (req,res) => {
+const updateUser = (req,res) => {
   const id = req.user._id;
   const {name, about} = req.body;
   UserSchema.findByIdAndUpdate(id, {name,about}, {new: true})
@@ -54,7 +54,7 @@ updateUser = (req,res) => {
     })
 }
 
-updateAvatar = (req,res) => {
+const updateAvatar = (req,res) => {
   const id = req.user._id;
   const {avatar} = req.body;
   UserSchema.findByIdAndUpdate(id, {avatar}, {new: true})
@@ -75,8 +75,4 @@ updateAvatar = (req,res) => {
     })
 }
 
-module.exports = {getUser,
-                  getUserById,
-                  createUser,
-                  updateUser,
-                  updateAvatar};
+module.exports = {getUser, getUserById, createUser, updateUser, updateAvatar};

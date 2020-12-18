@@ -23,9 +23,8 @@ const createCard = (req,res) => {
 }
 
 const deleteCardById = (req,res) => {
-  const {id} = req.params;
-  console.log(id)
-  CardSchema.findByIdAndRemove(id)
+  const {cardId} = req.params;
+    CardSchema.findByIdAndRemove(cardId)
     .orFail(() => {
       const error = new Error('Данные не найдены');
       error.statusCode = 404;
@@ -44,4 +43,53 @@ const deleteCardById = (req,res) => {
     })
 }
 
-module.exports = {getCards, createCard, deleteCardById}
+const likeCard = (req,res) => {
+  const userId = req.user._id;
+  const {cardId} = req.params;
+
+  CardSchema.findByIdAndUpdate(cardId,
+    {$addToSet: { likes: userId }},
+    {new: true})
+    .orFail(() => {
+      const error = new Error('Данные не найдены');
+      error.statusCode = 404;
+      throw error;
+    })
+    .then(data => res.status(200).send(data))
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        res.status(400).send({message: 'Ошибка получения данных'});
+      } else if (err.statusCode === 404) {
+        res.status(404).send({message: err.message})
+      } else {
+        res.status(500).send({message: 'Ошибка сервера'});
+      }
+    })
+
+}
+
+const dislikeCard = (req,res) => {
+  const userId = req.user._id;
+  const {cardId} = req.params;
+
+  CardSchema.findByIdAndUpdate(cardId,
+    {$pull: { likes: userId }},
+    {new: true})
+    .orFail(() => {
+      const error = new Error('Данные не найдены');
+      error.statusCode = 404;
+      throw error;
+    })
+    .then(data => res.status(200).send(data))
+    .catch((err) => {
+      if (err.kind === 'ObjectId') {
+        res.status(400).send({message: 'Ошибка получения данных'});
+      } else if (err.statusCode === 404) {
+        res.status(404).send({message: err.message})
+      } else {
+        res.status(500).send({message: 'Ошибка сервера'});
+      }
+    })
+}
+
+module.exports = {getCards, createCard, deleteCardById, likeCard, dislikeCard}
