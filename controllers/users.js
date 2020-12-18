@@ -7,8 +7,8 @@ const getUser = (req,res) => {
 }
 
 const getUserById = (req,res) => {
-  const {id} = req.params;
-  UserSchema.findById(id)
+  const {userId} = req.params;
+  UserSchema.findById(userId)
     .orFail(() => {
       const error = new Error('Данные не найдены');
       error.statusCode = 404;
