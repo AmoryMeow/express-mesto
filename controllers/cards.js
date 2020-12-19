@@ -1,7 +1,7 @@
-const CardSchema = require('../models/card');
+const cardModel = require('../models/card');
 
 const getCards = (req, res) => {
-  CardSchema.find({})
+  cardModel.find({})
     .then((data) => res.status(200).send(data))
     .catch((err) => res.status(500).send({ message: `Ошибка сервера ${err}` }));
 };
@@ -10,7 +10,7 @@ const createCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id;
 
-  CardSchema.create({ name, link, owner })
+  cardModel.create({ name, link, owner })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -23,7 +23,7 @@ const createCard = (req, res) => {
 
 const deleteCardById = (req, res) => {
   const { cardId } = req.params;
-  CardSchema.findByIdAndRemove(cardId)
+  cardModel.findByIdAndRemove(cardId)
     .orFail(() => {
       const error = new Error('Данные не найдены');
       error.statusCode = 404;
@@ -31,8 +31,8 @@ const deleteCardById = (req, res) => {
     })
     .then((card) => res.status(200).send(card))
     .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        res.status(400).send({ message: 'Ошибка получения данных' });
+      if (err.kind === 'ObjectId' || err.kind === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
       } else {
@@ -45,7 +45,7 @@ const likeCard = (req, res) => {
   const userId = req.user._id;
   const { cardId } = req.params;
 
-  CardSchema.findByIdAndUpdate(cardId,
+  cardModel.findByIdAndUpdate(cardId,
     { $addToSet: { likes: userId } },
     { new: true })
     .orFail(() => {
@@ -55,8 +55,8 @@ const likeCard = (req, res) => {
     })
     .then((data) => res.status(200).send(data))
     .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        res.status(400).send({ message: 'Ошибка получения данных' });
+      if (err.kind === 'ObjectId' || err.kind === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
       } else {
@@ -69,7 +69,7 @@ const dislikeCard = (req, res) => {
   const userId = req.user._id;
   const { cardId } = req.params;
 
-  CardSchema.findByIdAndUpdate(cardId,
+  cardModel.findByIdAndUpdate(cardId,
     { $pull: { likes: userId } },
     { new: true })
     .orFail(() => {
@@ -79,8 +79,8 @@ const dislikeCard = (req, res) => {
     })
     .then((data) => res.status(200).send(data))
     .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        res.status(400).send({ message: 'Ошибка получения данных' });
+      if (err.kind === 'ObjectId' || err.kind === 'CastError') {
+        res.status(400).send({ message: 'Переданы некорректные данные' });
       } else if (err.statusCode === 404) {
         res.status(404).send({ message: err.message });
       } else {
